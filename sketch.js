@@ -24,7 +24,7 @@ let font; // Preloads the font for the game
 let ui_gameplay; // user interface for the gameplay
 let ui_death; // user interface for dead screen
 
-let gameState = 'playing'; // gamestates = "gameOver", "playing", "standBy"
+let gameState = 'standBy'; // gamestates = "gameOver", "playing", "standBy"
 let countdown = 9; // Countdown to start the game again as a loop
 let gameOverStartTime = 0; //Millis to count back
 
@@ -124,10 +124,6 @@ function draw() {
             gameState = "gameOver";
             gameOverStart = millis();
             playCredits = 0;
-          } else{
-            if (gameState !== "standBy"){
-              paused();
-            }
           }
         }
 
@@ -163,9 +159,12 @@ function draw() {
         posX = keypoint.x;
         image(imgplayer, posX, 380, 50, 50);
         image(imgplayernose, keypoint.x-25/2, keypoint.y-25/2, 25, 25);
-          }
+          }  
+        } else {
+          playerDetected = false;
+          print('playerDetected=NO')
         }
-      }
+      }    
     }
   } // End function Draw
 
@@ -197,7 +196,7 @@ function gameIsOver() {
   
   // Countdown visual
   textSize(10);
-  text("next game will begin in... " + remaining + " segs", 320, 430);
+  text("next game will begin in... " + remaining + " segs", 320, 465);
 
   // Si se acaba el tiempo, reiniciar
   if (remaining <= 0) {
@@ -219,8 +218,9 @@ function resetGame() {
   }
 }
 
-function fstandBy(){
-    // Background
+function paused(){
+    if(gameState === 'standBy'){
+      // Background
     image(ui_death, 0, 0, width, height);
 
     // Title
