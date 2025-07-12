@@ -24,7 +24,7 @@ let font; // Preloads the font for the game
 let ui_gameplay; // user interface for the gameplay
 let ui_death; // user interface for dead screen
 
-let gameState = 'playing'; // gamestates = "gameOver", "playing", "standBy"
+let gameState = 'standBy'; // gamestates = "gameOver", "playing", "standBy"
 let countdown = 9; // Countdown to start the game again as a loop
 let gameOverStartTime = 0; //Millis to count back
 
@@ -100,9 +100,27 @@ function draw() {
   if (playCredits >= highScore) {
     highScore = playCredits;
   }
-
+if (gameState === 'standBy') {
+  fstandBy();
+}
     // Enemies logic  
     if(gameState === 'playing'){
+    
+        
+    // UI Gameplay
+    // image background  
+    image(ui_gameplay, 0, 0, width, height);  
+    // text
+    fill(255);
+    textSize(12);
+    textFont(font);
+    textAlign(LEFT, BOTTOM);
+    stroke(0);
+    text("High Score: " + highScore, 15, 470);
+    text("Your Score: " + playCredits, 440, 470);
+
+      
+      
       // Restart the enemies
       for (let i = 0; i < enemies.length; i++) {
       let e = enemies[i];
@@ -124,24 +142,13 @@ function draw() {
             gameState = "gameOver";
             gameOverStart = millis();
             playCredits = 0;
-          }
+                  
+          } 
         }
-
       image(e.img, e.x, e.y, 50, 50);
       }
-    
-    // image background  
-    image(ui_gameplay, 0, 0, width, height);
-
-    // texts
-    fill(255);
-    textSize(12);
-    textFont(font);
-    textAlign(LEFT, BOTTOM);
-    stroke(0);
-    text("High Score: " + highScore, 15, 470);
-    text("Your Score: " + playCredits, 440, 470);
     }
+    
     if(gameState === 'gameOver'){
       gameIsOver();
       playCredits = 0;
@@ -153,18 +160,14 @@ function draw() {
     for (let j = 0; j < pose.keypoints.length; j++) {
       let keypoint = pose.keypoints[0];
 
-      if (keypoint.confidence > 0.1) {
-        playerDetected = true; // Detects an human
+      if (keypoint.confidence > 0.01) {
         if(gameState === 'playing'){
         posX = keypoint.x;
         image(imgplayer, posX, 380, 50, 50);
         image(imgplayernose, keypoint.x-25/2, keypoint.y-25/2, 25, 25);
-          }  
-        } else {
-          playerDetected = false;
-          print('playerDetected=NO')
+          }
         }
-      }    
+      }
     }
   } // End function Draw
 
@@ -196,7 +199,7 @@ function gameIsOver() {
   
   // Countdown visual
   textSize(10);
-  text("next game will begin in... " + remaining + " segs", 320, 465);
+  text("next game will begin in... " + remaining + " segs", 320, 430);
 
   // Si se acaba el tiempo, reiniciar
   if (remaining <= 0) {
@@ -206,7 +209,7 @@ function gameIsOver() {
 
 function resetGame() {
   // Reinicia el juego
-  gameState = "playing";
+  gameState = 'playing';
   countdown = 9;
   
   // Preload again the sprite of pacman death to the next game over
@@ -218,9 +221,10 @@ function resetGame() {
   }
 }
 
-function paused(){
-    if(gameState === 'standBy'){
-      // Background
+function fstandBy(){
+    
+    gameState = 'standBy';
+    // Background
     image(ui_death, 0, 0, width, height);
 
     // Title
@@ -262,13 +266,22 @@ function paused(){
     
     // Image
     image(imgplayer, width / 2 + 210, height / 2 - 25, 50, 50);
-    }
 }
 
 
 // Callback function for when bodyPose outputs data
 function gotPoses(results) {
-  //-----------------------------------------------------------------------
-  // Save the output to the poses variable
   poses = results;
+
+  if (poses.length === 0) {
+    // Nadie frente a la cámara
+    playerDetected = false;
+    gameState = 'standBy';
+  } else {
+    // Alguien está frente a la cámara
+    playerDetected = true;
+    if (gameState === 'standBy') {
+      gameState = 'playing';
+    }
+  }
 }
