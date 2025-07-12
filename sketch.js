@@ -24,7 +24,7 @@ let font; // Preloads the font for the game
 let ui_gameplay; // user interface for the gameplay
 let ui_death; // user interface for dead screen
 
-let gameState = 'standBy'; // gamestates = "gameOver", "playing", "standBy"
+let gameState = 'playing'; // gamestates = "gameOver", "playing", "standBy"
 let countdown = 9; // Countdown to start the game again as a loop
 let gameOverStartTime = 0; //Millis to count back
 
