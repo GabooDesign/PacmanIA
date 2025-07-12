@@ -97,7 +97,7 @@ function draw() {
   image(video, 0, 0, width, height);
 
   //Sets the HighScore if the PlayCredits are upper than the actual value
-  if (playCredits >= highScore) {
+  if (playCredits > highScore) {
     highScore = playCredits;
   }
 if (gameState === 'standBy') {
@@ -141,7 +141,6 @@ if (gameState === 'standBy') {
           if (gameState !== "gameOver") {
             gameState = "gameOver";
             gameOverStart = millis();
-            playCredits = 0;
                   
           } 
         }
@@ -151,7 +150,6 @@ if (gameState === 'standBy') {
     
     if(gameState === 'gameOver'){
       gameIsOver();
-      playCredits = 0;
     }
   
   // ml5.js ia body detection
@@ -211,6 +209,7 @@ function resetGame() {
   // Reinicia el juego
   gameState = 'playing';
   countdown = 9;
+  playCredits = 0;
   
   // Preload again the sprite of pacman death to the next game over
   imgplayerdead = loadImage('sprites/PlayerDead.gif')
