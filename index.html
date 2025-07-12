@@ -34,5 +34,23 @@
   </head>
   <body>
     <script src="sketch.js"></script>
+    <script>
+  window.addEventListener('load', () => {
+    const canvas = document.querySelector('canvas');
+
+    function resizeCanvasToFullScreen() {
+      const scaleX = window.innerWidth / 640;
+      const scaleY = window.innerHeight / 480;
+      const scale = Math.min(scaleX, scaleY); // mantiene la proporción
+
+      canvas.style.transformOrigin = 'top left';
+      canvas.style.transform = `scale(${scale})`;
+    }
+
+    resizeCanvasToFullScreen();
+    window.addEventListener('resize', resizeCanvasToFullScreen);
+  });
+</script>
+
   </body>
 </html>
