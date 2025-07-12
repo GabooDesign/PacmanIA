@@ -262,6 +262,7 @@ function paused(){
     
     // Image
     image(imgplayer, width / 2 + 210, height / 2 - 25, 50, 50);
+    }
 }
 
 
