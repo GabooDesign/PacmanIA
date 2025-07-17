@@ -29,6 +29,16 @@ let clock = {
   active: true
 };
 
+let imgPoint;
+let point = {
+  x: 0,
+  y: -100,
+  speed: 2,
+  size: 30,
+  active: true
+};
+
+
 // ------------------------------------------ PRELOAD
 
 function preload() {
@@ -46,6 +56,7 @@ function preload() {
     loadImage("sprites/enemies/enemie4.gif"),
   ];
   imgClock = loadImage('sprites/Clock.png');
+  imgPoint = loadImage('sprites/Point.png');
 }
 
 // ------------------------------------------ SETUP
@@ -69,6 +80,11 @@ clock.x = random(width - clock.size);
 clock.y = random(-400, -100);
 clock.speed = random(1.5, 4);
 clock.active = true;
+  
+point.x = random(width - point.size);
+point.y = random(-400, -100);
+point.speed = random(1.5, 4);
+point.active = true;
 
 }
 
@@ -85,6 +101,29 @@ function draw() {
     let tempelapsed = int((millis() - tempstartTime) / 1000);
     let tempremaining = temptotalTime - tempelapsed;
     
+    if (point.active) {
+  image(imgPoint, point.x, point.y, point.size, point.size);
+  point.y += point.speed;
+
+  if (point.y > height + 50) {
+    point.x = random(width - point.size);
+    point.y = random(-400, -100);
+    point.speed = random(1.5, 4);
+  }
+
+  // Colisión con jugador
+  if (playerDetected &&
+      posX < point.x + point.size &&
+      posX + 50 > point.x &&
+      400 < point.y + point.size &&
+      400 + 50 > point.y) {
+    playCredits += 3; // 3 puntos extra
+    point.x = random(width - point.size);
+    point.y = random(-400, -100);
+    point.speed = random(1.5, 4);
+  }
+}
+
     if (tempremaining > 0) {
       fill(255);
       textSize(24);
@@ -113,7 +152,7 @@ function draw() {
       posX + 50 > clock.x &&
       400 < clock.y + clock.size &&
       400 + 50 > clock.y) {
-    temptotalTime += 15; // ¡15 segundos más!
+    temptotalTime = temptotalTime + 15
     clock.x = random(width - clock.size);
     clock.y = random(-400, -100);
     clock.speed = random(1.5, 4);
@@ -219,12 +258,13 @@ function youWin() {
   textAlign(CENTER, CENTER);
   stroke(0);
   text("Time is up !", width / 2, height / 2);
-    if (playCredits > highScore) {
+    if (playCredits >= highScore) {
   fill(0, 255, 0);
   textSize(16);
   text("New High Score: " + playCredits, width / 2, 300);
   text("Reclama tu premio!", width / 2, 350);
-  } else {
+  highScore = playCredits;
+    } else {
   fill(255);
   textSize(16);
   text("High Score: " + highScore, width / 2, 300);  
@@ -241,14 +281,13 @@ function youWin() {
 }
 
 function resetGame() {
-  highScore = playCredits;
   gameState = 'playing';
   gameOverStart = 0;
   wingameOverStart = 0;
   playCredits = 0;
   temptotalTime = 15;
   tempstartTime = millis();
-  
+
 
 clock.x = random(width - clock.size);
 clock.y = random(-400, -100);
