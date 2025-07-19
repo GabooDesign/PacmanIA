@@ -284,6 +284,9 @@ function resetGame() {
   gameState = 'playing';
   gameOverStart = 0;
   wingameOverStart = 0;
+  if(highScore <= playCredits){
+  highScore = playCredits;
+  }
   playCredits = 0;
   temptotalTime = 15;
   tempstartTime = millis();
