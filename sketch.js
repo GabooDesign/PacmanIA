@@ -238,9 +238,13 @@ function gameIsOver() {
   text("High Score: " + highScore, width / 2, 180);
   text("Your Score: " + playCredits, width / 2, 300);
   image(imgplayerdead, posX, 380);
-
+  
   textSize(10);
   text("next game will begin in... " + remaining + " segs", 320, 430);
+  
+  if(highScore <= playCredits){
+  highScore = playCredits;
+  }
 
   if (remaining <= 0) {
     resetGame();
